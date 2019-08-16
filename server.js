@@ -5,78 +5,40 @@ const cors = require('cors');
 
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
+const profile = require('./controllers/profile');
+const image = require('./controllers/image');
+
+const db = knex({
+	client: 'pg',
+	connection: {
+		host: '127.0.0.1',
+		user: 'edjunma',
+		password: '',
+		database: 'smart-brain'
+	}
+});
+
 const app = express();
 
-const database = {
-	users: [
-		{
-			id: '123',
-			name: 'John',
-			email: 'john@gmail.com',
-			password: 'cookies',
-			entries: 0,
-			joined: new Date()
-		},
-		{
-			id: '124',
-			name: 'Sally',
-			email: 'sally@gmail.com',
-			password: 'bananas',
-			entries: 0,
-			joined: new Date()
-		}
-	],
-	login: [
-		{
-			id: '987',
-			hash: '',
-			email: 'john@gmail.com'
-		}
-	]
-};
-
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
-	res.send(database.users);
+	res.send(db.users);
 });
 
-app.post('/signin', (req, res) => {
-	signin.handleSignin(req, res, db, bcrypt);
-});
+app.post('/signin', signin.handleSignin(db, bcrypt));
 
 app.post('/register', (req, res) => {
 	register.handleRegister(req, res, db, bcrypt);
 });
 
 app.get('/profile/:id', (req, res) => {
-	const { id } = req.params;
-	const found = false;
-	database.users.forEach(user => {
-		if (user.id === id) {
-			found = true;
-			return res.json(user);
-		}
-	});
-	if (!found) {
-		res.status(400).json('not found');
-	}
+	profile.handleProfileGet(req, res, db);
 });
 
 app.put('/image', (req, res) => {
-	const { id } = req.params;
-	let found = false;
-	database.users.forEach(user => {
-		if (user.id === id) {
-			found = true;
-			user.entries++;
-			return res.json(user.entries);
-		}
-	});
-	if (!found) {
-		res.status(400).json('not found');
-	}
+	image.handleImage(req, res, db);
 });
 
 bcrypt.hash('bacon', null, null, function(err, hash) {
