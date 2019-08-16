@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 
+const register = require('./controllers/register');
+const signin = require('./controllers/signin');
 const app = express();
 
 const database = {
@@ -41,27 +43,12 @@ app.get('/', (req, res) => {
 });
 
 app.post('/signin', (req, res) => {
-	bcrypt.compare('apples', '$2a$10$bTAqEQrkPEOhzpe9TexWM.DA7eOqLiZzSxXyJzkpN0kG.CROMBWiS', function(
-		err,
-		res
-	) {
-		console.log('first guess', res);
-	});
-	bcrypt.compare('veggies', hash, function(err, res) {
-		console.log('second guess', res);
-	});
-	if (
-		req.body.email === database.users[0].email &&
-		req.body.password === database.users[0].password
-	) {
-		res.json(database.users[0]);
-	} else {
-		res.status(400).json('error logging in');
-	}
-	res.json('signing');
+	signin.handleSignin(req, res, db, bcrypt);
 });
 
-app.post('/register', register.handleRegister);
+app.post('/register', (req, res) => {
+	register.handleRegister(req, res, db, bcrypt);
+});
 
 app.get('/profile/:id', (req, res) => {
 	const { id } = req.params;
@@ -117,5 +104,3 @@ app.listen(3000, () => {
 /image --> PUT --> user
 
 */
-
-
