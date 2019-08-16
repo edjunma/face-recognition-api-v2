@@ -1,34 +1,34 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt-nodejs");
-const cors = require("cors");
+const express = require('express');
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
 
 const database = {
 	users: [
 		{
-			id: "123",
-			name: "John",
-			email: "john@gmail.com",
-			password: "cookies",
+			id: '123',
+			name: 'John',
+			email: 'john@gmail.com',
+			password: 'cookies',
 			entries: 0,
 			joined: new Date()
 		},
 		{
-			id: "124",
-			name: "Sally",
-			email: "sally@gmail.com",
-			password: "bananas",
+			id: '124',
+			name: 'Sally',
+			email: 'sally@gmail.com',
+			password: 'bananas',
 			entries: 0,
 			joined: new Date()
 		}
 	],
 	login: [
 		{
-			id: "987",
-			hash: "",
-			email: "john@gmail.com"
+			id: '987',
+			hash: '',
+			email: 'john@gmail.com'
 		}
 	]
 };
@@ -36,19 +36,19 @@ const database = {
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
 	res.send(database.users);
 });
 
-app.post("/signin", (req, res) => {
-	bcrypt.compare("apples", "$2a$10$bTAqEQrkPEOhzpe9TexWM.DA7eOqLiZzSxXyJzkpN0kG.CROMBWiS", function(
+app.post('/signin', (req, res) => {
+	bcrypt.compare('apples', '$2a$10$bTAqEQrkPEOhzpe9TexWM.DA7eOqLiZzSxXyJzkpN0kG.CROMBWiS', function(
 		err,
 		res
 	) {
-		console.log("first guess", res);
+		console.log('first guess', res);
 	});
-	bcrypt.compare("veggies", hash, function(err, res) {
-		console.log("second guess", res);
+	bcrypt.compare('veggies', hash, function(err, res) {
+		console.log('second guess', res);
 	});
 	if (
 		req.body.email === database.users[0].email &&
@@ -56,24 +56,14 @@ app.post("/signin", (req, res) => {
 	) {
 		res.json(database.users[0]);
 	} else {
-		res.status(400).json("error logging in");
+		res.status(400).json('error logging in');
 	}
-	res.json("signing");
+	res.json('signing');
 });
 
-app.post("/register", (req, res) => {
-	const { email, name, password } = req.body;
-	database.users.push({
-		id: "125",
-		name: name,
-		email: email,
-		entries: 0,
-		joined: new Date()
-	});
-	res.json(database.users[database.users.length - 1]);
-});
+app.post('/register', register.handleRegister);
 
-app.get("/profile/:id", (req, res) => {
+app.get('/profile/:id', (req, res) => {
 	const { id } = req.params;
 	const found = false;
 	database.users.forEach(user => {
@@ -83,11 +73,11 @@ app.get("/profile/:id", (req, res) => {
 		}
 	});
 	if (!found) {
-		res.status(400).json("not found");
+		res.status(400).json('not found');
 	}
 });
 
-app.put("/image", (req, res) => {
+app.put('/image', (req, res) => {
 	const { id } = req.params;
 	let found = false;
 	database.users.forEach(user => {
@@ -98,11 +88,11 @@ app.put("/image", (req, res) => {
 		}
 	});
 	if (!found) {
-		res.status(400).json("not found");
+		res.status(400).json('not found');
 	}
 });
 
-bcrypt.hash("bacon", null, null, function(err, hash) {
+bcrypt.hash('bacon', null, null, function(err, hash) {
 	// Store hash in password database
 });
 
@@ -116,7 +106,7 @@ bcrypt.hash("bacon", null, null, function(err, hash) {
 // });
 
 app.listen(3000, () => {
-	console.log("app is running on port 3000");
+	console.log('app is running on port 3000');
 });
 
 /*
@@ -127,3 +117,5 @@ app.listen(3000, () => {
 /image --> PUT --> user
 
 */
+
+
