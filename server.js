@@ -47,28 +47,6 @@ app.post('/imageurl', (req, res) => {
 	image.handleApiCall(req, res);
 });
 
-bcrypt.hash('bacon', null, null, function(err, hash) {
-	// Store hash in password database
+app.listen(process.env.PORT || 3000, () => {
+	console.log(`app is running on port ${process.env.PORT}`);
 });
-
-// Load the hash from password database
-// bcrypt.compare("bacon", hash, function(err, res) {
-// 	// res == true
-// });
-
-// bcrypt.compare("veggies", hash, function(err, res) {
-// 	// res = false
-// });
-
-app.listen(3000, () => {
-	console.log('app is running on port 3000');
-});
-
-/*
-/ --> res = this is working
-/signin --> POST = success/fail
-/register --> POST = USER
-/profile/:userID --> GET = user
-/image --> PUT --> user
-
-*/
